@@ -15,7 +15,7 @@ This is a command-line Python program. Python 3 is necessary to run. It is also 
 To run this program on your local computer, execute the following Git command:
 
 ```
-git clone https://github.com/andrejanesic/Python-Sound-Wave-Analysis.git
+git clone https://github.com/andrejanesic/Python-Word-Similarity-Analysis.git
 ```
 
 This will clone the repository onto your local computer.
