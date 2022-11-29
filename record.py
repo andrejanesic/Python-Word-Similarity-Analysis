@@ -57,7 +57,7 @@ def record():
     stream.close()
     p.terminate()
 
-    r = normalize(r)
+    # r = normalize(r)
     return sample_width, r
 
 

@@ -22,6 +22,7 @@ def main():
                 'positional_args': {},
                 'named_args': {},
             }
+            exec_comm = True
             for arg_type in ['positional_args', 'named_args']:
                 if cmdset.get(arg_type):
                     valid_all = True
@@ -29,7 +30,7 @@ def main():
                         err = None
                         found = False
                         vals = None
-                        for user_arg in cmd[1:]:
+                        for user_arg in cmd[0:]:
                             if (arg_type == 'positional_args') or (arg_type == 'named_args' and (user_arg.lower() == '-' + arg['arg'])):
                                 ind = cmd.index(user_arg)
                                 found = True
@@ -88,10 +89,12 @@ def main():
 
                     # If all valid, proceed with exec
                     if not valid_all:
-                        continue
+                        exec_comm = False
+                        break
 
             # Call handler
-            cmdset['handler'](args)
+            if exec_comm:
+                cmdset['handler'](args)
     except KeyboardInterrupt:
         constants.COMMANDS['exit']['handler']({})
 

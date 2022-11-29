@@ -1,5 +1,9 @@
+from typing import List
 import wave
 import numpy as np
+import constants
+from word_wave import WordWave
+from time import time
 
 
 class SoundWave:
@@ -14,13 +18,18 @@ class SoundWave:
         self.name = name
         self.wave = wave
         self.values = values
-        self.cleaned = False
+        self.words = []
+        self.extracted = False
         self.speech_detected = False
 
-    def find_endpoints(self, p: int, r: int):
+    def find_endpoints(self, p: int = 0, r: int = 0):
         """
         Finds the endpoints of speech on the sound wave. Returns noise mask and borders.
         """
+        if p == 0:
+            p = constants.PARAM_EXTRACT_P
+        if r == 0:
+            r = constants.PARAM_EXTRACT_R
 
         # Get the number of frames for the first 100ms.
         initial_t = 100
@@ -43,8 +52,6 @@ class SoundWave:
             noise_mask[i:(i+window_w)] = j
             i += window_w
 
-        # TODO pitati sto mi ovo skoro nista ne menja???
-        # TODO da li se ovo moze zameniti vektorskim racunom?
         length = 0
         start = -1
         curr = 0
@@ -83,13 +90,38 @@ class SoundWave:
 
         return (noise_mask, noise_borders)
 
-    def clean(self, p: int, r: int):
+    def extract_words(self, p: int = 0, r: int = 0) -> List[WordWave]:
         """
-        Removes non-speech parts of the wave. Finds speech endpoints first with given values P and R.
+        Extracts a list of WordWaves detected in the SoundWave.
         """
-        if self.cleaned:
-            return
-        noise_mask, _ = self.find_endpoints(p, r)
-        self.values = np.delete(self.values, ~noise_mask.astype(bool))
-        self.cleaned = True
+
+        if self.extracted:
+            return self.words
+        noise_mask, noise_borders = self.find_endpoints(p, r)
+
         self.speech_detected = noise_mask.sum() > 0
+        if self.speech_detected == False:
+            self.extracted = True
+            print(constants.STR_ERR_NO_WORDS_FOUND % self.name)
+            return
+
+        if len(noise_borders) % 2 == 1:
+            print(constants.STR_ERR_ODD_WORD_INDICES_COUNT %
+                  len(noise_borders))
+            return
+
+        words_raw = []
+        values_cleaned = np.multiply(self.values, noise_mask)
+        for i in range(0, len(noise_borders) // 2):
+            ind_l = int(noise_borders[i] * self.wave.getframerate())
+            ind_r = int(noise_borders[i + 1] * self.wave.getframerate() + 1)
+            words_raw.append(values_cleaned[ind_l:ind_r])
+
+        self.words = []
+        for i in range(0, len(words_raw)):
+            ww = WordWave(f'word-{int(time())}-{i}',
+                          self.wave.getframerate(), words_raw[i])
+            self.words.append(ww)
+        self.extracted = True
+        print(f"Extracted {len(self.words)} words from sound wave {self.name}")
+        return self.words
