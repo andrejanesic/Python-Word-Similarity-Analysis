@@ -6,8 +6,12 @@ This program processes any given `.wav` signal (or records a signal via input) a
 
 [![Author](https://andrejanesic.com/git-signature.png)](https://github.com/andrejanesic)
 
-This project is largely based on the code provided via the following resources:
+This project is largely based on the code/information provided by the following resources and their respective authors:
+
 - [Linear Predictive Coding, kunigami, 11 Dec 2021](https://github.com/kunigami/kunigami.github.io/blob/master/blog/code/2021-05-13-lpc-in-python/lpc.ipynb)
+- [LPC_Speech_Synthesis](https://github.com/hcy71o/LPC_Speech_Synthesis/blob/develop/Speech_analysis.ipynb)
+- [StackOverflow: "Writing WAV file using Python, Numpy array and WAVE module"](https://stackoverflow.com/questions/40782159/writing-wav-file-using-python-numpy-array-and-wave-module)
+- [vanilla-stft-mfcc](https://github.com/brihijoshi/vanilla-stft-mfcc/blob/master/notebook.ipynb)
 
 ## Setup & Running
 
