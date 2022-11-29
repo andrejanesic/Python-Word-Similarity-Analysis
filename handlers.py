@@ -1,5 +1,7 @@
 import constants
 import record
+import load_wave
+from state import state
 import sys
 
 
@@ -17,6 +19,11 @@ def handle_record(args: dict = None):
 
 
 def handle_load(args: dict = None):
+    """
+    Handles the routine of loading a new sound wave.
+    """
+    sw = load_wave(args['positional_args']['path'])
+    state.add_sound_wave(sw)
     return
 
 
