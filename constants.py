@@ -10,8 +10,8 @@ STR_ERR_ODD_WORD_INDICES_COUNT = 'Detected odd number of word indices: %d'
 STR_ERR_NO_WORDS_FOUND = 'No words found to extract in sound wave %s'
 STR_ERR_SW_NOT_LOADED = 'Sound wave "%s" not loaded, did you forget to load it?'
 STR_ERR_WW_NOT_LOADED = 'Word wave "%s" does not exist'
-PARAM_EXTRACT_P = 500
-PARAM_EXTRACT_R = 5000
+PARAM_EXTRACT_P = 2000
+PARAM_EXTRACT_R = 7500
 COMMANDS = {
     'list': {
         'about': 'Lists all loaded sound waves and words.',

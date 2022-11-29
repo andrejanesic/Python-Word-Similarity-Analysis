@@ -112,10 +112,12 @@ class SoundWave:
 
         words_raw = []
         values_cleaned = np.multiply(self.values, noise_mask)
-        for i in range(0, len(noise_borders) // 2):
+        i = 0
+        while i < len(noise_borders):
             ind_l = int(noise_borders[i] * self.wave.getframerate())
             ind_r = int(noise_borders[i + 1] * self.wave.getframerate() + 1)
             words_raw.append(values_cleaned[ind_l:ind_r])
+            i += 2
 
         self.words = []
         for i in range(0, len(words_raw)):
