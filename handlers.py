@@ -311,8 +311,6 @@ def handle_mfcc(args: dict = None):
                 pass
             else:
                 window_l = int(window_l * ww.framerate / 1000)
-        if args['named_args'].get('p'):
-            p = args['named_args']['p'][0]
 
     cepstral_coefficients = ww.calc_mfcc(
         window_f, window_l, filters_n, delta_t)

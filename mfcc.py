@@ -62,3 +62,14 @@ def dct(dct_filter_num, filter_len):
         basis[i, :] = np.cos(i * samples) * np.sqrt(2.0 / filter_len)
 
     return basis
+
+
+def get_delta_values(mat, t):
+    delta_x = np.zeros(shape=mat.shape)
+    for i in range(t, mat.shape[1]-t):
+        prev_val = mat[:, i-t]
+        next_val = mat[:, i+t]
+
+        delta_x[:, i] = (next_val - prev_val)/2
+
+    return delta_x

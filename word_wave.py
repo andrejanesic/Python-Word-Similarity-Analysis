@@ -23,7 +23,7 @@ class WordWave:
         self.values = values
         self.lpc_prediction = None
         self.lpc_error = None
-        self.mpcc = None
+        self.mfcc = None
 
     def predict_lpc(self, window_l: int, shift: int, p: int, window_f: str = None):
         """
@@ -93,9 +93,12 @@ class WordWave:
         dct_filter_num = 40
         dct_filters = mfcc.dct(dct_filter_num, mel_filter_num)
 
-        cepstral_coefficents = np.dot(dct_filters, audio_log)
-        self.mpcc = cepstral_coefficents
-        return self.mpcc
+        cepstral_coefficients = np.dot(dct_filters, audio_log)
+        coeff_delta = mfcc.get_delta_values(cepstral_coefficients, t)
+        coeff_delta_delta = mfcc.get_delta_values(coeff_delta, t)
+        # np.vstack((cepstral_coefficients, coeff_delta, coeff_delta_delta))
+        self.mfcc = cepstral_coefficients
+        return self.mfcc
 
     def save(self, presentation: str = None):
         """
