@@ -1,7 +1,11 @@
 import lpc
+import mfcc
 import numpy as np
 import pathlib
 import wave
+import scipy.fftpack as fft
+from scipy.signal import get_window
+import matplotlib.pyplot as plt
 
 
 class WordWave:
@@ -19,6 +23,7 @@ class WordWave:
         self.values = values
         self.lpc_prediction = None
         self.lpc_error = None
+        self.mpcc = None
 
     def predict_lpc(self, window_l: int, shift: int, p: int, window_f: str = None):
         """
@@ -37,6 +42,60 @@ class WordWave:
         self.lpc_prediction, self.lpc_error = lpc.prediction(
             self.values, window, p, overlap)
         return (self.lpc_prediction, self.lpc_error)
+
+    def calc_mfcc(self, window_f: str, window_l: int, filters_n: int, t: int):
+        """
+        Calculates MFCC for word wave.
+        """
+        audio = mfcc.normalize_audio(self.values)
+
+        hop_size = 15  # ms
+        FFT_size = window_l
+
+        audio_framed = mfcc.frame_audio(audio, FFT_size=FFT_size,
+                                        hop_size=hop_size, sample_rate=self.framerate)
+
+        if window_f == "hamming":
+            window_f = "hamm"
+        else:
+            window_f = "hann"
+        window = get_window(window_f, FFT_size, fftbins=True)
+        audio_win = audio_framed * window
+
+        audio_winT = np.transpose(audio_win)
+
+        audio_fft = np.empty(
+            (int(1 + FFT_size // 2), audio_winT.shape[1]), dtype=np.complex64, order='F')
+
+        for n in range(audio_fft.shape[1]):
+            audio_fft[:, n] = fft.fft(audio_winT[:, n], axis=0)[
+                :audio_fft.shape[0]]
+
+        audio_fft = np.transpose(audio_fft)
+        audio_power = np.square(np.abs(audio_fft))
+
+        freq_min = 0
+        freq_high = self.framerate / 2
+        mel_filter_num = filters_n
+
+        filter_points, mel_freqs = mfcc.get_filter_points(
+            freq_min, freq_high, mel_filter_num, FFT_size, sample_rate=44100)
+
+        filters = mfcc.get_filters(filter_points, FFT_size)
+
+        enorm = 2.0 / (mel_freqs[2:mel_filter_num+2] -
+                       mel_freqs[:mel_filter_num])
+        filters *= enorm[:, np.newaxis]
+
+        audio_filtered = np.dot(filters, np.transpose(audio_power))
+        audio_log = 10.0 * np.log10(audio_filtered)
+
+        dct_filter_num = 40
+        dct_filters = mfcc.dct(dct_filter_num, mel_filter_num)
+
+        cepstral_coefficents = np.dot(dct_filters, audio_log)
+        self.mpcc = cepstral_coefficents
+        return self.mpcc
 
     def save(self, presentation: str = None):
         """

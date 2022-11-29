@@ -166,6 +166,55 @@ COMMANDS = {
         ],
         'handler': handle_lpc,
     },
+    'mfcc': {
+        'about': 'Calculates MFCC for the given word wave.',
+        'positional_args': [
+            {
+                'about': 'Name of the word wave to calculate LPC for.',
+                'arg': 'name',
+                'values': 1,
+                'type': 'string',
+            },
+        ],
+        'named_args': [
+            {
+                'about': 'Window function.',
+                'arg': 'f',
+                'optional': True,
+                'values': 1,
+                'type': 'hamming|hanning',
+            },
+            {
+                'about': 'Window size parameter unit (miliseconds or samples).',
+                'arg': 'u',
+                'optional': True,
+                'values': 1,
+                'type': 'ms|samp',
+            },
+            {
+                'about': 'Window size, in pre-defined unit (defaults to # samples).',
+                'arg': 'w',
+                'optional': True,
+                'values': 1,
+                'type': 'int',
+            },
+            {
+                'about': 'Number of MFCC filters.',
+                'arg': 'm',
+                'optional': True,
+                'values': 1,
+                'type': 'int',
+            },
+            {
+                'about': 'Delta filter t-value (0 to disable).',
+                'arg': 't',
+                'optional': True,
+                'values': 1,
+                'type': 'int',
+            },
+        ],
+        'handler': handle_mfcc,
+    },
     'help': {
         'about': 'Shows this help dialog.',
         'handler': handle_help,

@@ -273,3 +273,53 @@ def handle_lpc(args: dict = None):
     plt.legend()
     plt.show()
     return
+
+
+def handle_mfcc(args: dict = None):
+    """
+    Handles the calculation of MFCC for the selected word wave.
+    """
+
+    if not args:
+        return
+
+    if (not args.get('positional_args')) or \
+            (not args['positional_args'].get('name')):
+        return
+
+    ww = database.get_sound_wave(args['positional_args']['name'][0])
+    if not ww:
+        print(constants.STR_ERR_WW_NOT_LOADED %
+              args['positional_args']['name'])
+        return
+
+    window_l = 256
+    window_f = 'hamming'
+    filters_n = 10
+    delta_t = 2
+    if args.get('named_args'):
+        if args['named_args'].get('f'):
+            window_f = args['named_args']['f'][0]
+        if args['named_args'].get('w'):
+            window_l = args['named_args']['w'][0]
+        if args['named_args'].get('m'):
+            filters_n = args['named_args']['m'][0]
+        if args['named_args'].get('t'):
+            delta_t = args['named_args']['t'][0]
+        if args['named_args'].get('u'):
+            if args['named_args']['u'][0] == 'samp':
+                pass
+            else:
+                window_l = int(window_l * ww.framerate / 1000)
+        if args['named_args'].get('p'):
+            p = args['named_args']['p'][0]
+
+    cepstral_coefficients = ww.calc_mfcc(
+        window_f, window_l, filters_n, delta_t)
+
+    plt.figure(figsize=(15, 5))
+    plt.plot(np.linspace(0, len(ww.values) /
+                         ww.framerate, num=len(ww.values)), ww.values)
+    plt.imshow(cepstral_coefficients, aspect='auto', origin='lower')
+    plt.show()
+    return
