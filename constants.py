@@ -10,6 +10,7 @@ STR_ERR_ODD_WORD_INDICES_COUNT = 'Detected odd number of word indices: %d'
 STR_ERR_NO_WORDS_FOUND = 'No words found to extract in sound wave %s'
 STR_ERR_SW_NOT_LOADED = 'Sound wave "%s" not loaded, did you forget to load it?'
 STR_ERR_WW_NOT_LOADED = 'Word wave "%s" does not exist'
+STR_WW_RENAMED = 'Word wave renamed to "%s"'
 PARAM_EXTRACT_P = 2000
 PARAM_EXTRACT_R = 7500
 COMMANDS = {
@@ -86,6 +87,19 @@ COMMANDS = {
             }
         ],
         'handler': handle_record
+    },
+    'word': {
+        'about': 'Central command for managing word waves.',
+        'named_args': [
+            {
+                'about': 'Renames the selected word wave (first value is the name of the word wave to rename, and second is the new name.)',
+                'arg': 'rename',
+                'optional': True,
+                'values': 2,
+                'type': 'string',
+            }
+        ],
+        'handler': handle_word,
     },
     'help': {
         'about': 'Shows this help dialog.',
