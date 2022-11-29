@@ -6,6 +6,9 @@ This program processes any given `.wav` signal (or records a signal via input) a
 
 [![Author](https://andrejanesic.com/git-signature.png)](https://github.com/andrejanesic)
 
+This project is largely based on the code provided via the following resources:
+- [Linear Predictive Coding, kunigami, 11 Dec 2021](https://github.com/kunigami/kunigami.github.io/blob/master/blog/code/2021-05-13-lpc-in-python/lpc.ipynb)
+
 ## Setup & Running
 
 This is a command-line Python program. Python 3 is necessary to run. It is also possible to run this program via the given Dockerfile (through Makefile), however, you'll need to modify the Makefile to include a display port for Docker in order to see Pyplot graphs. It's recommended to run this program directly on your computer without Docker.
