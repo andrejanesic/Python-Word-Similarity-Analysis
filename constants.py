@@ -215,6 +215,25 @@ COMMANDS = {
         ],
         'handler': handle_mfcc,
     },
+    'dtw': {
+        'about': 'Calculates distance between query and template(s) using DTW.',
+        'named_args': [
+            {
+                'about': 'DTW query word.',
+                'arg': 'query',
+                'values': 1,
+                'type': 'string',
+            },
+            {
+                'about': 'DTW word templates to query against.',
+                'arg': 'templates',
+                'optional': False,
+                'values': '*',
+                'type': 'string',
+            },
+        ],
+        'handler': handle_dtw,
+    },
     'help': {
         'about': 'Shows this help dialog.',
         'handler': handle_help,

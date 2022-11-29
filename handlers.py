@@ -290,7 +290,7 @@ def handle_mfcc(args: dict = None):
     ww = database.get_sound_wave(args['positional_args']['name'][0])
     if not ww:
         print(constants.STR_ERR_WW_NOT_LOADED %
-              args['positional_args']['name'])
+              args['positional_args']['name'][0])
         return
 
     window_l = 256
@@ -321,3 +321,30 @@ def handle_mfcc(args: dict = None):
     plt.imshow(cepstral_coefficients, aspect='auto', origin='lower')
     plt.show()
     return
+
+
+def handle_dtw(args: dict = None):
+    """
+    Handles the calculation of distance between query and templates with DTW.
+    """
+
+    if not args:
+        return
+
+    if (not args.get('named_args')) or \
+            (not args['named_args'].get('query')) or \
+            (not args['named_args'].get('templates')):
+        return
+
+    ww_query = database.get_sound_wave(args['named_args']['query'][0])
+    if not ww_query:
+        print(constants.STR_ERR_WW_NOT_LOADED %
+              args['named_args']['query'][0])
+        return
+
+    for n in args['named_args']['templates']:
+        ww_template = database.get_sound_wave(n)
+        if not ww_template:
+            print(constants.STR_ERR_WW_NOT_LOADED % n)
+            return
+        ww_query.calc_dtw(ww_template)

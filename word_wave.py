@@ -1,5 +1,6 @@
 import lpc
 import mfcc
+from calc_dtw import calc_dtw
 import numpy as np
 import pathlib
 import wave
@@ -99,6 +100,12 @@ class WordWave:
         # np.vstack((cepstral_coefficients, coeff_delta, coeff_delta_delta))
         self.mfcc = cepstral_coefficients
         return self.mfcc
+
+    def calc_dtw(self, template):
+        """
+        Calculates distance from template WordWave with DTW.
+        """
+        calc_dtw(self, template)
 
     def save(self, presentation: str = None):
         """
