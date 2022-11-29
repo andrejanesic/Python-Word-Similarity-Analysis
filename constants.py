@@ -11,6 +11,7 @@ STR_ERR_NO_WORDS_FOUND = 'No words found to extract in sound wave %s'
 STR_ERR_SW_NOT_LOADED = 'Sound wave "%s" not loaded, did you forget to load it?'
 STR_ERR_WW_NOT_LOADED = 'Word wave "%s" does not exist'
 STR_WW_RENAMED = 'Word wave renamed to "%s"'
+STR_ERR_BAD_LPC_OPERANDS = 'The passed LPC operands do not compute mathematically. Try overlap value of 0.5'
 PARAM_EXTRACT_P = 2000
 PARAM_EXTRACT_R = 7500
 COMMANDS = {
@@ -90,23 +91,80 @@ COMMANDS = {
     },
     'word': {
         'about': 'Central command for managing word waves.',
-        'named_args': [
+        'positional_args': [
             {
-                'about': 'Renames the selected word wave (first value is the name of the word wave to rename, and second is the new name.)',
-                'arg': 'rename',
-                'optional': True,
-                'values': 2,
+                'about': 'Name of the word to manage.',
+                'arg': 'name',
+                'values': 1,
                 'type': 'string',
             },
+        ],
+        'named_args': [
             {
-                'about': 'Saves the selected word into ./out.',
-                'arg': 'save',
+                'about': 'Renames the selected word wave to the new name.',
+                'arg': 'rename',
                 'optional': True,
                 'values': 1,
                 'type': 'string',
-            }
+            },
+            {
+                'about': 'Saves the selected word into ./out with the given representation (appended to file name.)',
+                'arg': 'save',
+                'optional': True,
+                'values': 1,
+                'type': 'raw|lpc|mfcc',
+            },
         ],
         'handler': handle_word,
+    },
+    'lpc': {
+        'about': 'Calculates an LPC prediction for the given word wave.',
+        'positional_args': [
+            {
+                'about': 'Name of the word wave to calculate LPC for.',
+                'arg': 'name',
+                'values': 1,
+                'type': 'string',
+            },
+        ],
+        'named_args': [
+            {
+                'about': 'Window function.',
+                'arg': 'f',
+                'optional': True,
+                'values': 1,
+                'type': 'hamming|hanning|none',
+            },
+            {
+                'about': 'Window size/shift parameter unit (miliseconds or samples).',
+                'arg': 'u',
+                'optional': True,
+                'values': 1,
+                'type': 'ms|samp',
+            },
+            {
+                'about': 'Window size, in pre-defined unit (defaults to # samples).',
+                'arg': 'w',
+                'optional': True,
+                'values': 1,
+                'type': 'int',
+            },
+            {
+                'about': 'Window shift in pre-defined unit (defaults to # samples).',
+                'arg': 's',
+                'optional': True,
+                'values': 1,
+                'type': 'int',
+            },
+            {
+                'about': 'Precision coefficient.',
+                'arg': 'p',
+                'optional': True,
+                'values': 1,
+                'type': 'int',
+            },
+        ],
+        'handler': handle_lpc,
     },
     'help': {
         'about': 'Shows this help dialog.',

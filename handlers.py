@@ -5,6 +5,8 @@ from plot_waves import plot_sound_waves
 from plot_waves import plot_word_waves
 from database import database
 import sys
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 def handle_list(args: dict = None):
@@ -184,25 +186,90 @@ def handle_word(args: dict = None):
     if not args:
         return
 
-    if not args.get('named_args'):
+    if (not args.get('positional_args')) or \
+        (not args.get('named_args')) or \
+            (not args['positional_args'].get('name')):
+        return
+
+    ww = database.get_sound_wave(args['positional_args']['name'][0])
+    if not ww:
+        print(constants.STR_ERR_WW_NOT_LOADED %
+              args['positional_args']['name'])
         return
 
     for arg, vals in args['named_args'].items():
 
         if arg == 'rename':
-            ww = database.get_sound_wave(vals[0])
-            name = vals[1]
-            if not ww:
-                print(constants.STR_ERR_WW_NOT_LOADED % vals[0])
-            else:
-                ww.name = name
-                print(constants.STR_WW_RENAMED % ww.name)
-            return
+            ww.name = vals[0]
+            print(constants.STR_WW_RENAMED % ww.name)
+            continue
 
         if arg == 'save':
-            ww = database.get_sound_wave(vals[0])
-            if not ww:
-                print(constants.STR_ERR_WW_NOT_LOADED % vals[0])
-            else:
+            if vals[1] == 'raw':
                 ww.save()
-            return
+            elif vals[1] == 'lpc':
+                ww.save('lpcs')
+            elif vals[1] == 'mfcc':
+                # TODO
+                # ww.save('mfcc')
+                pass
+            else:
+                # TODO
+                pass
+            continue
+
+
+def handle_lpc(args: dict = None):
+    """
+    Handles the calculation of LPC for the selected word wave.
+    """
+
+    if not args:
+        return
+
+    if (not args.get('positional_args')) or \
+            (not args['positional_args'].get('name')):
+        return
+
+    ww = database.get_sound_wave(args['positional_args']['name'][0])
+    if not ww:
+        print(constants.STR_ERR_WW_NOT_LOADED %
+              args['positional_args']['name'])
+        return
+
+    window_l = 256
+    shift = 128
+    p = 32
+    window_f = 'hamming'
+    if args.get('named_args'):
+        if args['named_args'].get('f'):
+            window_f = args['named_args']['f'][0]
+        if args['named_args'].get('w'):
+            window_l = args['named_args']['w'][0]
+        if args['named_args'].get('s'):
+            shift = args['named_args']['s'][0]
+        if args['named_args'].get('u'):
+            if args['named_args']['u'][0] == 'samp':
+                pass
+            else:
+                window_l = int(window_l * ww.framerate / 1000)
+                shift = int(shift * ww.framerate / 1000)
+        if args['named_args'].get('p'):
+            p = args['named_args']['p'][0]
+
+    lpc, err = ww.predict_lpc(window_l, shift, p, window_f)
+
+    plt.ylabel("Amplitude")
+    plt.xlabel("Time [s]")
+
+    title = f"{ww.name} and LPC"
+    time = np.linspace(0, len(ww.values) /
+                       ww.framerate, num=len(ww.values))
+    min_len = min(len(ww.values), len(lpc))
+    plt.plot(time, ww.values[:min_len], label=f"{ww.name}")
+    plt.plot(time, lpc[:min_len], '--', label=f"LPC")
+
+    plt.title(title)
+    plt.legend()
+    plt.show()
+    return

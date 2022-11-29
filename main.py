@@ -9,7 +9,7 @@ def main():
 
             # Get input and check if valid initial command
             cmd = input('> ')
-            cmd = cmd.split(' ')
+            cmd = cmd.split()
             if len(cmd) < 1:
                 continue
             if not (cmd[0] in constants.COMMANDS.keys()):
@@ -51,13 +51,21 @@ def main():
                                                     t = float(argv)
                                                 elif arg['type'] == 'boolean':
                                                     t = argv == 'true'
+                                                elif len(arg['type'].split('|')) > 0:
+                                                    possible_values = arg['type'] \
+                                                        .split('|')
+                                                    if t not in possible_values:
+                                                        raise ValueError
                                                 else:
                                                     n = arg['arg']
                                                     raise ValueError(
                                                         f'Invalid arg type defined for {cmd[0]}.args.{n}'
                                                     )
                                             except ValueError:
-                                                err = constants.STR_INVALID_ARG_VALUE % argv, arg['arg']
+                                                if type(arg['arg']) == type([]):
+                                                    err = constants.STR_INVALID_ARG_VALUE % (argv, arg['arg'][0])
+                                                else:
+                                                    err = constants.STR_INVALID_ARG_VALUE % (argv, arg['arg'])
                                                 break
                                             vals.append(t)
 
