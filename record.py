@@ -61,7 +61,7 @@ def record():
     return sample_width, r
 
 
-def record_to_file(path=None):
+def record_to_file(path: str = None) -> str:
     "Records from the microphone and outputs the resulting data to 'path'"
     print('Press CTRL+C to stop recording.')
     if path == None:
@@ -77,6 +77,7 @@ def record_to_file(path=None):
     wf.writeframes(data)
     wf.close()
     print(f'File saved to {path}')
+    return path
 
 
 if __name__ == '__main__':
