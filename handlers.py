@@ -183,11 +183,12 @@ def handle_word(args: dict = None):
 
     if not args:
         return
-    
+
     if not args.get('named_args'):
         return
-    
+
     for arg, vals in args['named_args'].items():
+
         if arg == 'rename':
             ww = database.get_sound_wave(vals[0])
             name = vals[1]
@@ -196,4 +197,12 @@ def handle_word(args: dict = None):
             else:
                 ww.name = name
                 print(constants.STR_WW_RENAMED % ww.name)
+            return
+
+        if arg == 'save':
+            ww = database.get_sound_wave(vals[0])
+            if not ww:
+                print(constants.STR_ERR_WW_NOT_LOADED % vals[0])
+            else:
+                ww.save()
             return

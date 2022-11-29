@@ -122,7 +122,9 @@ class SoundWave:
         self.words = []
         for i in range(0, len(words_raw)):
             ww = WordWave(f'word-{int(time())}-{i}',
-                          self.wave.getframerate(), words_raw[i])
+                          self.wave.getframerate(),
+                          self.wave.getsampwidth(),
+                          words_raw[i])
             self.words.append(ww)
         self.extracted = True
         print(f"Extracted {len(self.words)} words from sound wave {self.name}")

@@ -97,6 +97,13 @@ COMMANDS = {
                 'optional': True,
                 'values': 2,
                 'type': 'string',
+            },
+            {
+                'about': 'Saves the selected word into ./out.',
+                'arg': 'save',
+                'optional': True,
+                'values': 1,
+                'type': 'string',
             }
         ],
         'handler': handle_word,
