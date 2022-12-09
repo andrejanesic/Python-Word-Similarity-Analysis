@@ -10,8 +10,8 @@ def calc_dtw(query, template):
 
     # TODO sometimes throws memmory error!
     # Find the best match with the canonical recursion formula
-    q_int = np.array(query).astype(np.int16)
-    t_int = np.array(template).astype(np.int16)
+    q_int = np.array(query.values).astype(np.int16)
+    t_int = np.array(template.values).astype(np.int16)
     alignment = dtw(q_int, t_int, keep_internals=True)
 
     # Display the warping curve, i.e. the alignment curve

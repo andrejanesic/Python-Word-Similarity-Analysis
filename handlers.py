@@ -33,6 +33,7 @@ def handle_list(args: dict = None):
         if len(database.get_sound_waves()) == 0:
             print("\tNo sound waves loaded yet")
         for sw in database.get_sound_waves():
+            if not sw: continue
             dur = round((sw.values.shape[0] * 1.0) / sw.wave.getframerate(), 2)
             cut = 'Processed' if sw.extracted else 'Not processed'
             print(f"\t[S] {sw.name} - {dur}s - {cut}")
@@ -205,11 +206,11 @@ def handle_word(args: dict = None):
             continue
 
         if arg == 'save':
-            if vals[1] == 'raw':
+            if vals[0] == 'raw':
                 ww.save()
-            elif vals[1] == 'lpc':
+            elif vals[0] == 'lpc':
                 ww.save('lpcs')
-            elif vals[1] == 'mfcc':
+            elif vals[0] == 'mfcc':
                 # TODO
                 # ww.save('mfcc')
                 pass
